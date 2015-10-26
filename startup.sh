@@ -10,7 +10,7 @@ if [[ $include ]]; then
 fi
 
 if [[ $auto_retirement ]]; then
-    sed -i -e "s|# AUTO_RETIREMENT=1|AUTO_RETIREMENT = \"${auto_retirement}\"|" /etc/default/mackerel-agent
+    sed -i -e "s|# AUTO_RETIREMENT=1|AUTO_RETIREMENT = ${auto_retirement}|" /etc/default/mackerel-agent
 fi
 
 echo /usr/local/bin/mackerel-agent -apikey=${apikey} -v
