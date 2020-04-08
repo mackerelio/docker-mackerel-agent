@@ -1,12 +1,13 @@
 FROM centos:7
 
 # setup docker.repo
-RUN echo -e "[dockerrepo]\nname=Docker Repository\nbaseurl=https://yum.dockerproject.org/repo/main/centos/\$releasever/\nenabled=1\ngpgcheck=1\ngpgkey=https://yum.dockerproject.org/gpg" >> /etc/yum.repos.d/docker.repo
+RUN yum -y install yum-utils \
+  && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 # setup mackerel-agent docker-engine
 RUN curl -fsSL https://mackerel.io/file/script/amznlinux/setup-yum.sh | sed -r 's/sudo( -k)?//' | sh \
   && sed -i.bak 's/$releasever/latest/' /etc/yum.repos.d/mackerel.repo \
   && yum -y install mackerel-agent mackerel-agent-plugins mackerel-check-plugins \
-  && yum -y install docker-engine \
+  && yum -y install docker-ce docker-ce-cli containerd.io \
   && yum clean all
 
 ADD startup.sh /startup.sh
