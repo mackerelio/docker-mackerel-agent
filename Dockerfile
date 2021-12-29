@@ -9,6 +9,7 @@ RUN apt-get update \
 RUN curl -fsSL  https://mackerel.io/file/script/setup-apt-v2.sh | sh
 
 # setup docker repo
+# ref: https://docs.docker.com/engine/install/debian/
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
   && echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
