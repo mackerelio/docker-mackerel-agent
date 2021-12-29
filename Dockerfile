@@ -2,7 +2,7 @@ FROM debian:buster-slim
 
 # setup tools
 RUN apt-get update \
-  && apt-get install -y sudo ca-certificates curl gnupg2 lsb-release \
+  && apt-get install -y sudo ca-certificates curl gnupg2 lsb-release net-tools \
   && rm -rf /var/lib/apt/lists/*
 
 # setup mackerel-agent repo
