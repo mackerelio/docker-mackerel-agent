@@ -1,16 +1,27 @@
-FROM centos:7
+FROM debian:buster-slim
 
-# setup docker.repo
-RUN yum -y install yum-utils \
-  && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-# setup mackerel-agent docker-engine
-RUN curl -fsSL https://mackerel.io/file/script/amznlinux/setup-yum.sh | sed -r 's/sudo( -k)?//' | sh \
-  && sed -i.bak 's/$releasever/latest/' /etc/yum.repos.d/mackerel.repo \
-  && yum -y install mackerel-agent mackerel-agent-plugins mackerel-check-plugins \
-  && yum -y install docker-ce docker-ce-cli containerd.io \
-  && yum clean all
+# setup tools
+RUN apt-get update \
+  && apt-get install -y sudo ca-certificates curl gnupg2 lsb-release net-tools \
+  && rm -rf /var/lib/apt/lists/*
 
-ADD startup.sh /startup.sh
+# setup mackerel-agent repo
+RUN curl -fsSL  https://mackerel.io/file/script/setup-apt-v2.sh | sh
+
+# setup docker repo
+# ref: https://docs.docker.com/engine/install/debian/
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+  && echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# setup mackerel-agent and docker
+RUN apt-get update \
+  && apt-get install -y mackerel-agent mackerel-agent-plugins mackerel-check-plugins \
+  && apt-get install -y docker-ce docker-ce-cli containerd.io \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY startup.sh /startup.sh
 RUN chmod 755 /startup.sh
 
 # boot mackerel-agent
