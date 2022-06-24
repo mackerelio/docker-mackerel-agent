@@ -15,7 +15,7 @@ fi
 if [ "$enable_docker_plugin" != "" ] && [ "$enable_docker_plugin" != "0" ] && ! grep '^\[plugin\.metrics\.docker\]' $conf; then
     cat >> $conf << "EOF"
 [plugin.metrics.docker]
-command = "/usr/bin/mackerel-plugin-docker -method API -name-format name"
+command = "/usr/bin/mackerel-plugin-docker -name-format name"
 EOF
 fi
 
