@@ -23,14 +23,14 @@ jobs:
       - name: Get tag
         id: get_tag
         run: echo "::set-output name=tag::${GITHUB_REF##*/}"
-      - name: Build and push
+      - name: Build (and push if necessary)
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: |
             linux/amd64
             linux/arm64
-          push: true
+          push: ${{ inputs.needs-push }}
           tags: |
             mackerel/mackerel-agent:latest
             mackerel/mackerel-agent:${{ steps.get_tag.outputs.tag }}
