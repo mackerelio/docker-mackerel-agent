@@ -8,3 +8,4 @@ jobs:
     uses: ./.github/workflows/wf-build.yml
     with:
       needs-push: true
+    secrets: inherit
