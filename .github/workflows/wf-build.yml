@@ -1,34 +1,37 @@
 name: Build
 on:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_call:
+    inputs:
+      needs-push:
+        type: boolean
+        default: false
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
+        if: inputs.needs-push
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Get tag
         id: get_tag
-        run: echo "::set-output name=tag::${GITHUB_REF##*/}"
-      - name: Build and push
-        uses: docker/build-push-action@v2
+        run: echo "tag=${GITHUB_REF##*/}" >> "$GITHUB_OUTPUT"
+      - name: Build (and push if necessary)
+        uses: docker/build-push-action@v6
         with:
           context: .
           platforms: |
             linux/amd64
             linux/arm64
-          push: true
+          push: ${{ inputs.needs-push }}
           tags: |
             mackerel/mackerel-agent:latest
             mackerel/mackerel-agent:${{ steps.get_tag.outputs.tag }}

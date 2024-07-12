@@ -1,0 +1,11 @@
+name: On push version tag
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+jobs:
+  build-push:
+    uses: ./.github/workflows/wf-build.yml
+    with:
+      needs-push: true
+    secrets: inherit
