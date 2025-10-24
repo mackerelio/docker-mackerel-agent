@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -29,7 +29,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: inputs.needs-push
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           role-session-name: "mackere-agent-${{ github.run_id }}-${{ github.run_number }}"
